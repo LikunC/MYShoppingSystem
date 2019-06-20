@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        .loginBox {
+            width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            border: 1px solid #666;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="loginBox">
+        <h3 style="text-align:center;size: 24px;color: blue;">More Mall</h3>
+
+        <el-input v-model="form.username" placeholder="请输入用户名" style="margin-top:20px;"></el-input>
+
+        <el-input v-model="form.password" type="password" placeholder="请输入密码" style="margin-top:20px;"></el-input>
+
+        <el-button @click="login" style="width:100%;margin-top:50px;margin-bottom:50px;">登录</el-button>
+
+    </div>
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+    function getContextPath() {
+        var pathName=window.document.location.pathname;
+        //获取带"/"的项目名，如：/uimcardprj
+        var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+        return  projectName;
+    }
+    function queryParams(data, isPrefix) {
+        isPrefix = isPrefix ? isPrefix : false
+        var prefix = isPrefix ? '?' : ''
+        var _result = []
+        for (var key in data) {
+            var value = data[key]
+            // 去掉为空的参数
+            if (['', undefined, null].includes(value)) {
+                continue
+            }
+            if (value.constructor === Array) {
+                value.forEach(function (_value) {
+                    _result.push(encodeURIComponent(key) + '[]=' + encodeURIComponent(_value))
+                })
+            } else {
+                _result.push(encodeURIComponent(key) + '=' + encodeURIComponent(value))
+            }
+        }
+
+        return _result.length ? prefix + _result.join('&') : ''
+    }
+
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                visible: false,
+                form: {
+                    username: '',
+                    password: ''
+                }
+            }
+        },
+        methods: {
+            login: function () {
+                axios.post(getContextPath()+'/api/admin/login', queryParams(this.form), {
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    }
+                }).then(function (res) {
+                    if (res.data.code === 0) {
+                        location.href = "/admin/category.html"
+                    }
+                })
+            }
+        }
+    })
+
+</script>
+</html>

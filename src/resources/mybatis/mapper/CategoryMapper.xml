@@ -4,23 +4,23 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hualy.shopping.dao.CategoryDao">
     <select id="find" parameterType="String" resultType="com.hualy.shopping.pojo.Category">
-		select * from category where id = #{id}
+		select * from mmall_category where id = #{id}
 	</select>
     <!-- 添加分类 -->
     <insert id="add" parameterType="com.hualy.shopping.pojo.Category">
-		insert into category (id,name) values(null,#{name})
+		insert into mmall_category (id,name) values(null,#{name})
 	</insert>
     <!-- 修改分类 -->
     <update id="edit" parameterType="com.hualy.shopping.pojo.Category">
-		update category set name = #{name} where id = #{id}
+		update mmall_category set name = #{name} where id = #{id}
 	</update>
     <!-- 删除分类 -->
     <delete id="delete" parameterType="String">
-		delete from category where id in(${value})
+		delete from mmall_category where id in(${value})
 	</delete>
 
     <select id="findList" parameterType="Map" resultType="com.hualy.shopping.pojo.Category">
-        select * from category where 1 = 1
+        select * from mmall_category where 1 = 1
         <if test="offset != null and pageSize != null">
             limit #{offset},#{pageSize}
         </if>

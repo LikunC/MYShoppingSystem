@@ -16,5 +16,11 @@
 		select * from user
 	</select>
 
+    <!--删除用户-->
+    <delete id="delete" parameterType="String">
+		delete from user where id in(${value})
+	</delete>
+
+
 
 </mapper>

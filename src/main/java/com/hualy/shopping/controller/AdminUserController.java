@@ -36,7 +36,7 @@ public class AdminUserController {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         AdminUser user = dao.findByUsername(username);
-
+        System.out.println("user = " + user.toString());
         if (user != null) {
             if (user.getPassword().equals(password)) {
                 req.getSession().setAttribute("user", user.getId());
@@ -60,7 +60,6 @@ public class AdminUserController {
             return JSONResult(1, "用户未登录", null);
         }
     }
-
 
     private Map<String, Object> JSONResult(int code, String message, Object data) {
         Map<String, Object> result = new HashMap<String, Object>();

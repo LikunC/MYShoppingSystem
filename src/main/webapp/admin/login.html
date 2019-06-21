@@ -33,6 +33,7 @@
 <!-- import JavaScript -->
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
 
 <script>
     function getContextPath() {
@@ -63,6 +64,7 @@
         return _result.length ? prefix + _result.join('&') : ''
     }
 
+
     new Vue({
         el: '#app',
         data: function () {
@@ -76,14 +78,17 @@
         },
         methods: {
             login: function () {
-                axios.post(getContextPath()+'/api/admin/login', queryParams(this.form), {
+                axios.post(/*getContextPath()+*/'/api/admin/login', queryParams(this.form), {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                     }
                 }).then(function (res) {
                     if (res.data.code === 0) {
-                        location.href = "/admin/category.html"
+                        console.log(res.data)
+                        Location.href = "/admin/category.html";
                     }
+                }).catch(function (err) {
+                    console.log(err)
                 })
             }
         }

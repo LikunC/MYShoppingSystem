@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hualy.shopping.dao.MmallOrderDao">
+    <!--    订单管理查询所有订单-->
+    <select id="findAll" resultType="Map">
+       SELECT mmall_order.order_no,
+            mmall_shipping.receiver_name,
+            CONCAT(mmall_shipping.receiver_city,mmall_shipping.receiver_district,mmall_shipping.receiver_address) receiver_add,
+            mmall_user.phone,
+            mmall_order_item.product_name,
+            mmall_order_item.quantity,
+            mmall_order_item.total_price,
+            mmall_order.status,
+            mmall_order.update_time
+        FROM mmall_order,mmall_shipping,mmall_order_item,mmall_user
+        WHERE mmall_order.shipping_id=mmall_shipping.id AND mmall_order.user_id=mmall_user.id AND mmall_order.order_no=mmall_order_item.id
+    </select>
+
+    <!--   添加订单-->
+    <insert id="add" parameterType="com.hualy.shopping.pojo.MmallOrder">
+		insert into mmall_order (id,user_id,order_no,shipping_id,payment,payment_type,postage,status,payment_time,send_time,end_time,close_time,create_time,update_time) values(null,#{userId},#{orderNo},#{shippingId},#{payment},#{paymentType},#{postage},#{status}，#{paymentTime},#{sengTime},#{endTime},#{closeTime},#{createTime},#{update})
+	</insert>
+
+</mapper>

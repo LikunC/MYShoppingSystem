@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #menu {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            overflow: scroll;
+        }
+
+        #content {
+            position: fixed;
+            left: 200px;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            padding: 16px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id=menu>
+        <el-menu default-active="order" style="height:100%;" @select="menuSelect">
+            <el-menu-item index="home">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>首页</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="user">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>用户管理</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="category">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>分类管理</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="product">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>商品管理</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="order">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>订单管理</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="profile">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>修改资料</span>
+                </template>
+            </el-menu-item>
+        </el-menu>
+    </div>
+    <!--    user: '用户',-->
+    <!--    order_no: '1234567',-->
+    <!--    shipping: '广东省广州市某某去某某地某某楼某某',-->
+    <!--    payment: 100,-->
+    <!--    payment_type: '在线支付',-->
+    <!--    postage: 10,-->
+    <!--    status: 1,-->
+    <!--    payment_time: '2019-06-20 10:20',-->
+    <!--    send_time:  '2019-06-20 10:40',-->
+    <!--    end_time: '2019-06-20 10:50',-->
+    <!--    close_time:'2019-06-20 10:55',-->
+    <!--    create_time: '2019-06-20 10:19',-->
+    <div id="content">
+        <h1>订单管理</h1>
+        <el-table
+                :data="orderList"
+                style="width: 100%">
+            <el-table-column
+                    prop="id"
+                    label="ID"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="user"
+                    label="订单用户"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="shipping"
+                    label="地址"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    width="200"
+                    prop="payment"
+                    label="支付金额">
+            </el-table-column>
+            <el-table-column
+                    width="200"
+                    prop="payment_type"
+                    label="支付类型">
+            </el-table-column>
+            <el-table-column
+                    width="200"
+                    prop="postage"
+                    label="运费">
+            </el-table-column>
+            <el-table-column
+                    width="200"
+                    prop="status"
+                    label="订单状态">
+                <template slot-scope="scope">
+                    {{['已取消','未付款','已付款','已发货','交易成功','交易关闭'][scope.row.status]}}
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" width="300" fixed="right">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            @click="showOrderDetail(scope.$index, scope.row)">订单详情
+                    </el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="deliver(scope.$index, scope.row)">发货
+                    </el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="completeOrder(scope.$index, scope.row)">完成订单
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                orderList: [{
+                    id: 1,
+                    user: '用户',
+                    order_no: '1234567',
+                    shipping: '广东省广州市某某去某某地某某楼某某',
+                    payment: 100,
+                    payment_type: '在线支付',
+                    postage: 10,
+                    status: 1,
+                    payment_time: '2019-06-20 10:20',
+                    send_time: '2019-06-20 10:40',
+                    end_time: '2019-06-20 10:50',
+                    close_time: '2019-06-20 10:55',
+                    create_time: '2019-06-20 10:19',
+                }]
+            }
+        },
+        mounted: function () {
+        },
+        methods: {
+            menuSelect: function (index) {
+                window.location = "./" + index + '.html'
+            },
+            showOrderDetail: function () {
+                // 查看订单详情
+            },
+            deliver: function () {
+                // 发货
+            },
+            completeOrder: function () {
+                // 完成订单
+            }
+        }
+    })
+
+</script>
+</html>

@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #menu {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            overflow: scroll;
+        }
+
+        #content {
+            position: fixed;
+            left: 200px;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            padding: 16px;
+        }
+
+        .avatar-uploader .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+        }
+
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id=menu>
+        <el-menu default-active="product" style="height:100%;" @select="menuSelect">
+            <el-menu-item index="home">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>首页</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="user">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>用户管理</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="category">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>分类管理</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="product">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>商品管理</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="order">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>订单管理</span>
+                </template>
+            </el-menu-item>
+            <el-menu-item index="profile">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>修改资料</span>
+                </template>
+            </el-menu-item>
+        </el-menu>
+    </div>
+    <div id="content">
+        <div>
+            <h1>商品管理
+                <el-button @click="addProductDialogVisible = true">添加商品+</el-button>
+            </h1>
+            <el-table
+                    :data="productList"
+                    style="width: 100%">
+                <el-table-column
+                        prop="id"
+                        label="ID"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="name"
+                        label="商品名称"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="subtitle"
+                        label="商品副标题"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        width="200"
+                        prop="main_image"
+                        label="产品主图">
+                    <template slot-scope="scope">
+                        <el-image :src="scope.row.main_image" fit="cover" style="width: 100px; height: 100px">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        width="400"
+                        prop="sub_images"
+                        label="轮播图">
+                    <template slot-scope="scope">
+                        <el-image
+                                v-for="image in (scope.row.sub_images || '').split(',')"
+                                style="width: 100px; height: 100px"
+                                :src="image"
+                                fit="cover"></el-image>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="200" fixed="right">
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                @click="handleEdit(scope.$index, scope.row)">编辑
+                        </el-button>
+                        <el-button
+                                size="mini"
+                                type="danger"
+                                @click="handleDelete(scope.$index, scope.row)">删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <el-dialog
+                    :append-to-body="true"
+                    title="添加商品"
+                    :visible.sync="addProductDialogVisible"
+                    width="80%">
+                <span>
+                    <el-form>
+                        <el-form-item label="商品分类">
+                            <el-select v-model="productForm.category_id" placeholder="商品分类">
+                                <el-option
+                                        v-for="item in categoryList"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                         </el-form-item>
+                        <el-form-item label="商品名称">
+                            <el-input v-model="productForm.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="商品副标题">
+                            <el-input v-model="productForm.subtitle"></el-input>
+                        </el-form-item>
+                         <el-form-item label="商品主图">
+                            <el-upload
+                                    class="avatar-uploader"
+                                    action="https://localhost:8080/file/upload"
+                                    :show-file-list="false"
+                                    :on-success="handleMainImageUploadSuccess">
+                              <img v-if="imagePreview" :src="imagePreview" class="avatar">
+                              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </el-form-item>
+                         <el-form-item label="商品描述">
+                            <el-input v-model="productForm.detail"></el-input>
+                        </el-form-item>
+                        <el-form-item label="商品价格">
+                            <el-input v-model="productForm.price"></el-input>
+                        </el-form-item>
+                        <el-form-item label="商品价格">
+                            <el-input v-model="productForm.stock"></el-input>
+                        </el-form-item>
+                        <el-form-item label="商品价格">
+                            <el-input v-model="productForm.status"></el-input>
+                        </el-form-item>
+                    </el-form>
+               </span>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="addProductDialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="addCategory(categoryForAdd)">确 定</el-button>
+                </span>
+            </el-dialog>
+
+            <el-dialog
+                    :append-to-body="true"
+                    title="修改商品"
+                    :visible.sync="editProductDialogVisible"
+                    width="80%">
+                <span>
+                    <el-form>
+                        <el-form-item label="商品分类">
+                            <el-select v-model="productForEdit.category_id" placeholder="商品分类">
+                                <el-option
+                                        v-for="item in categoryList"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                         </el-form-item>
+                        <el-form-item label="商品名称">
+                            <el-input v-model="productForEdit.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="商品副标题">
+                            <el-input v-model="productForEdit.subtitle"></el-input>
+                        </el-form-item>
+                         <el-form-item label="商品主图">
+                            <el-upload
+                                    class="avatar-uploader"
+                                    action="https://localhost:8080/file/upload"
+                                    :show-file-list="false"
+                                    :on-success="handleMainImageUploadSuccessForEdit">
+                              <img v-if="imagePreview" :src="imagePreview" class="avatar">
+                              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </el-form-item>
+                         <el-form-item label="商品描述">
+                            <el-input v-model="productForEdit.detail"></el-input>
+                        </el-form-item>
+                        <el-form-item label="商品价格">
+                            <el-input v-model="productForEdit.price"></el-input>
+                        </el-form-item>
+                        <el-form-item label="商品价格">
+                            <el-input v-model="productForEdit.stock"></el-input>
+                        </el-form-item>
+                        <el-form-item label="商品价格">
+                            <el-input v-model="productForEdit.status"></el-input>
+                        </el-form-item>
+                    </el-form>
+               </span>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="editProductDialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="editCategory(productForEdit)">确 定</el-button>
+                </span>
+            </el-dialog>
+        </div>
+    </div>
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+    // 声明一个函数  prefix-前缀
+    function queryParams(data, isPrefix) {
+        isPrefix = isPrefix ? isPrefix : false
+        var prefix = isPrefix ? '?' : ''
+        var _result = []
+        for (var key in data) {
+            var value = data[key]
+            // 去掉为空的参数
+            if (['', undefined, null].includes(value)) {
+                continue
+            }
+            if (value.constructor === Array) {
+                value.forEach(function (_value) {
+                    _result.push(encodeURIComponent(key) + '[]=' + encodeURIComponent(_value))
+                })
+            } else {
+                _result.push(encodeURIComponent(key) + '=' + encodeURIComponent(value))
+            }
+        }
+
+        return _result.length ? prefix + _result.join('&') : ''
+    }
+
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                imagePreview: '',
+                imagePreviewForEdit: '',
+                addProductDialogVisible: false,
+                editProductDialogVisible: false,
+                productList: [{
+                    id: 1,
+                    category_id: 1,
+                    name: "川黛 - 《蝴蝶弦》原创设计 民国风复古少女中长款旗袍秋冬女装",
+                    subtitle: "川黛 - 《蝴蝶弦》原创设计 民国风复古少女中长款旗袍秋冬女装",
+                    main_image: "http://localhost:8080/images/1.jpg",
+                    sub_images: "http://localhost:8080/images/2.jpg,http://localhost:8080/images/3.jpg,http://localhost:8080/images/4.jpg,http://localhost:8080/images/5.jpg",
+                    detail: "",
+                    price: 500,
+                    stock: 10,
+                    status: "在售",
+                }],
+                productForm: {
+                    category_id: 1,
+                    name: '',
+                    subtitle: '',
+                    main_image: '',
+                    sub_images: '',
+                    detail: '',
+                    price: '',
+                    stock: '',
+                    status: '在售',
+                },
+                productForEdit: {
+                    category_id: 1,
+                    name: '',
+                    subtitle: '',
+                    main_image: '',
+                    sub_images: '',
+                    detail: '',
+                    price: '',
+                    stock: '',
+                    status: '',
+                },
+                categoryList: []
+            }
+        },
+        mounted: function () {
+            this.getProductList()
+        },
+        methods: {
+            getCategoryList: function () {
+                var that = this
+                axios.get('/api/admin/category/list').then(function (res) {
+                    that.categoryList = res.data.data
+                })
+            },
+            getProductList: function () {
+                console.log("123")
+                var that = this
+                axios.get('/api/admin/product/list').then(function (res) {
+
+                    if (res.data.code === 0) {
+                        that.productList = res.data.data
+                    } else {
+                        that.productList = null
+                        that.$notify({
+                            title: '没有商品信息',
+                            message: res.data.message
+                        })
+                    }
+                })
+            },
+            addProduct: function (name) {
+                var that = this
+                axios.post('/api/admin/product', queryParams({
+                    name: name
+                })).then(function (res) {
+                    // 判断是否成功
+                    //
+                })
+            },
+            updateProduct: function (id, name) {
+                var that = this
+                axios.put('/api/admin/product', queryParams({
+                    id: id,
+                    name: name
+                })).then(function (res) {
+                    // ...
+                })
+            },
+            deleteProduct: function (id) {
+                console.log(id)
+
+                var that = this
+                axios.delete('/api/admin/product?id='+id, queryParams({
+                    id: id
+                })).then(function (res) {
+                    // ..
+                })
+            },
+            handleMainImageUploadSuccess: function (res, file) {
+                this.imagePreview = URL.createObjectURL(file.raw);
+                this.productForm.main_image = res.data.data
+            },
+            handleMainImageUploadSuccessForEdit: function (res, file) {
+                this.imagePreviewForEdit = URL.createObjectURL(file.raw);
+                this.productForm.main_image = res.data.data
+            },
+            menuSelect: function (index) {
+                window.location = "./" + index + '.html'
+            },
+            handleEdit: function (index) {
+                this.productForEdit = this.productList[index]
+                this.editProductDialogVisible = true
+            },
+            handleDelete: function (index) {
+                var that = this
+                this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                    that.deleteProduct(that.productList[index].id).then(function (res) {
+                        that.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                    })
+
+                }).catch(function () {
+                    // do nothings
+                });
+            }
+        }
+    })
+
+</script>
+</html>

@@ -9,6 +9,10 @@
         <!--指定文件位置 *通配符 -->
         <param-value>classpath:spring/applicationContext*.xml</param-value>
     </context-param>
+    <context-param>
+        <param-name/>
+        <param-value/>
+    </context-param>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
@@ -28,6 +32,16 @@
         <!-- 拦截所有请求 -->
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+    <filter>
+        <!--该过滤器用于处理post请求转换为标准的delete与put请求 -->
+        <filter-name>HiddenHttpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>HiddenHttpMethodFilter</filter-name>
+        <!--servlet为springMvc的servlet名 -->
+        <servlet-name>springmvc</servlet-name>
+    </filter-mapping>
     <!-- 乱码处理filter过滤器 -->
     <filter>
         <filter-name>encodingFilter</filter-name>

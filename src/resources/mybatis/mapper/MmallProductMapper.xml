@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hualy.shopping.dao.MmallProductDao">
+    <select id="findAll" resultType="com.hualy.shopping.pojo.MmallProduct">
+        select * from mmall_product;
+    </select>
+
+    <select id="findProductById" parameterType="com.hualy.shopping.pojo.MmallProduct" resultType="com.hualy.shopping.pojo.MmallProduct">
+        select * from mmall_product where id=#{id}
+    </select>
+    <update id="update" parameterType="com.hualy.shopping.pojo.MmallProduct">
+        update mmall_product
+        set
+            category_id=#{categoryId},
+            name=#{name},
+            subtitle=#{subtitle},
+            main_image=#{mainImage},
+            sub_image=#{subImage},
+            detail=#{detail},
+            price=#{price},
+            stock=#{stock},
+            status=#{status},
+            create_time=#{createTime},
+            update_time=#{updateTime}
+        where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="com.hualy.shopping.pojo.MmallProduct">
+        delete from mmall_product where id=#{id}
+    </delete>
+
+    <insert id="add" parameterType="com.hualy.shopping.pojo.MmallProduct">
+        insert into mmall_product (id,category_id,name,subtitle,main_image,sub_image,detail,price,stock,status,create_time,update_time)
+        value (null,#{categoryId},#{name},#{subtitle},#{mainImage},#{subImage},#{detail},#{price},#{stock},#{status},#{createTime},#{updateTime})
+    </insert>
+</mapper>

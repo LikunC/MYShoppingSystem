@@ -36,8 +36,8 @@ public class AdminUserController {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         AdminUser user = dao.findByUsername(username);
-        System.out.println("user = " + user.toString());
         if (user != null) {
+            System.out.println("user = " + user.toString());
             if (user.getPassword().equals(password)) {
                 req.getSession().setAttribute("user", user.getId());
                 return JSONResult(0, "用户登录成功", user);

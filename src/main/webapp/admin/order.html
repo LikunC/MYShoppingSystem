@@ -17,7 +17,7 @@
             top: 0;
             bottom: 0;
             width: 200px;
-            overflow: scroll;
+
         }
 
         #content {
@@ -27,6 +27,7 @@
             bottom: 0;
             top: 0;
             padding: 16px;
+            overflow: scroll;
         }
     </style>
 </head>
@@ -40,12 +41,14 @@
                     <span>首页</span>
                 </template>
             </el-menu-item>
-            <el-menu-item index="user">
-                <template slot="title">
-                    <i class="el-icon-location"></i>
-                    <span>用户管理</span>
-                </template>
-            </el-menu-item>
+            <template v-if="isAdmin">
+                <el-menu-item index="user">
+                    <template slot="title">
+                        <i class="el-icon-location"></i>
+                        <span>用户管理</span>
+                    </template>
+                </el-menu-item>
+            </template>
             <el-menu-item index="category">
                 <template slot="title">
                     <i class="el-icon-location"></i>
@@ -161,6 +164,7 @@
         el: '#app',
         data: function () {
             return {
+                isAdmin:false,
                 orderList: [{
                     id: 1,
                     user: '用户',
@@ -178,6 +182,9 @@
                 }]
             }
         },
+        created:function(){
+            this.isAdminUser();
+        },
         mounted: function () {
         },
         methods: {
@@ -192,6 +199,14 @@
             },
             completeOrder: function () {
                 // 完成订单
+            },
+            isAdminUser:function () {
+                var that = this;
+                axios.get('/api/admin/user').then(function (res) {
+                    if(res.data.code==0&&res.data.data.role==0){
+                        that.isAdmin = true;
+                    }
+                })
             }
         }
     })

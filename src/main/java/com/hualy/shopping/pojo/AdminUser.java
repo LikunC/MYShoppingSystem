@@ -8,6 +8,8 @@ public class AdminUser {
     private Integer age;//年龄
     private String address;//家庭住址
     private int role;
+    private String email;
+    private String phone;
 
     public int getRole() {
         return role;
@@ -62,6 +64,22 @@ public class AdminUser {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
 

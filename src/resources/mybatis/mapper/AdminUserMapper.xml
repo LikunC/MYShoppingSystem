@@ -7,13 +7,16 @@
     <select id="findByUsername" parameterType="String" resultType="com.hualy.shopping.pojo.AdminUser">
 		select * from mmall_user where username = #{username}
 	</select>
+    <select id="findById" parameterType="Long" resultType="com.hualy.shopping.pojo.AdminUser">
+		select * from mmall_user where id = #{id}
+	</select>
     <!-- 添加用户 -->
     <insert id="add" parameterType="com.hualy.shopping.pojo.AdminUser">
 		insert into mmall_user (id,username,password,photo,age,address) values(null,#{username},#{password},#{photo},#{age},#{address})
 	</insert>
     <!-- 修改用户 -->
     <update id="edit" parameterType="com.hualy.shopping.pojo.AdminUser">
-		update mmall_user set username = #{username},photo = #{photo},age = #{age},address = #{address} where id = #{id}
+		update mmall_user set username = #{username},photo = #{photo},age = #{age},address = #{address},password = #{password} where id = #{id}
 	</update>
     <!-- 修改用户密码 -->
     <update id="editPassword" parameterType="com.hualy.shopping.pojo.AdminUser">

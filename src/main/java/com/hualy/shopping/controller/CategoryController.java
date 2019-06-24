@@ -46,13 +46,11 @@ public class CategoryController {
 
     @RequestMapping(value = "/api/admin/category", method = RequestMethod.DELETE)
     @ResponseBody
-    private Map<String, Object> deleteCategory(HttpServletRequest req, HttpServletResponse res) {
+    private Map<String, Object> deleteCategory(HttpServletRequest req, HttpServletResponse res, int id) {
         Category category = new Category();
-        String id = req.getParameter("id");
-        String name = req.getParameter("name");
-        category.setId(Integer.valueOf(id));
-        category.setName(name);
-        dao.edit(category);
+//        String id = req.getParameter("id");
+        //category.setId(Integer.valueOf(id));
+        dao.delete(id+"");
         return JSONResult(0, "", category);
     }
 

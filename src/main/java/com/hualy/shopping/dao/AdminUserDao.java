@@ -8,6 +8,8 @@ import java.util.Map;
 public interface AdminUserDao {
     public AdminUser findByUsername(String username);
 
+    public AdminUser findById(Long id);
+
     public int add(AdminUser user);
 
     public int edit(AdminUser user);

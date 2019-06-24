@@ -23,11 +23,16 @@ public class AdminUserController {
     AdminUserDao dao;
 
 
-    @RequestMapping("/api/admin/user")
+    @RequestMapping(value = "/api/admin/user",method = RequestMethod.GET)
     @ResponseBody
-    private Map<String, Object> getUser() {
-        AdminUser user = dao.findByUsername("admin");
-        return JSONResult(0, "success", user);
+    private Map<String, Object> getUser(HttpServletRequest req) {
+        Object userIdObj = req.getSession().getAttribute("user");
+        if (userIdObj != null) {
+            AdminUser user = dao.findById((Long) userIdObj);
+            return JSONResult(0, "success", user);
+        }
+        return JSONResult(1, "error", null);
+
     }
 
     @RequestMapping(value = "/api/admin/login", method = RequestMethod.POST)
@@ -66,9 +71,30 @@ public class AdminUserController {
     private Map<String, Object> getUserList(HttpServletRequest req, HttpServletResponse res, String id) {
         Map<String, Object> map = new HashMap<>();
         List<AdminUser> userList = dao.findList(map);
-        System.out.println(userList + "-----------------------------");
         return JSONResult(0, "", userList);
     }
+
+    @RequestMapping(value = "/api/admin/upDataUser", method = RequestMethod.POST)
+    @ResponseBody
+    private Map<String, Object> upDataUser(HttpServletRequest req, HttpServletResponse res) {
+        Object userIdObj = req.getSession().getAttribute("user");
+        AdminUser user = new AdminUser();
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+        String photo = req.getParameter("photo");
+        System.out.println(photo+"+++++++++++++++");
+        Integer age =Integer.parseInt(req.getParameter("age"));
+        String address = req.getParameter("address");
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setAddress(address);
+        user.setAge(age);
+        user.setPhoto(photo);
+        user.setId((Long) userIdObj);
+        dao.edit(user);
+        return JSONResult(0, "", user);
+    }
+
 
     private Map<String, Object> JSONResult(int code, String message, Object data) {
         Map<String, Object> result = new HashMap<String, Object>();

@@ -8,7 +8,7 @@
 	</select>
     <!-- 添加分类 -->
     <insert id="add" parameterType="com.hualy.shopping.pojo.Category">
-		insert into mmall_category (id,name) values(null,#{name})
+		insert into mmall_category (name) values(#{name})
 	</insert>
     <!-- 修改分类 -->
     <update id="edit" parameterType="com.hualy.shopping.pojo.Category">

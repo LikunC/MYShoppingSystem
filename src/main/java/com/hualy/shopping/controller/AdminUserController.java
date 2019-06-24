@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -59,6 +60,14 @@ public class AdminUserController {
         } else {
             return JSONResult(1, "用户未登录", null);
         }
+    }
+    @RequestMapping(value = "/api/admin/Users/list", method = RequestMethod.GET)
+    @ResponseBody
+    private Map<String, Object> getUserList(HttpServletRequest req, HttpServletResponse res, String id) {
+        Map<String, Object> map = new HashMap<>();
+        List<AdminUser> userList = dao.findList(map);
+        System.out.println(userList + "-----------------------------");
+        return JSONResult(0, "", userList);
     }
 
     private Map<String, Object> JSONResult(int code, String message, Object data) {

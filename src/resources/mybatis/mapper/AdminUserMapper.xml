@@ -5,27 +5,27 @@
 <mapper namespace="com.hualy.shopping.dao.AdminUserDao">
     <!-- 根据用户名查找用户 -->
     <select id="findByUsername" parameterType="String" resultType="com.hualy.shopping.pojo.AdminUser">
-		select * from admin_user where username = #{username}
+		select * from mmall_user where username = #{username}
 	</select>
     <!-- 添加用户 -->
     <insert id="add" parameterType="com.hualy.shopping.pojo.AdminUser">
-		insert into admin_user (id,username,password,photo,age,address) values(null,#{username},#{password},#{photo},#{age},#{address})
+		insert into mmall_user (id,username,password,photo,age,address) values(null,#{username},#{password},#{photo},#{age},#{address})
 	</insert>
     <!-- 修改用户 -->
     <update id="edit" parameterType="com.hualy.shopping.pojo.AdminUser">
-		update admin_user set username = #{username},photo = #{photo},age = #{age},address = #{address} where id = #{id}
+		update mmall_user set username = #{username},photo = #{photo},age = #{age},address = #{address} where id = #{id}
 	</update>
     <!-- 修改用户密码 -->
     <update id="editPassword" parameterType="com.hualy.shopping.pojo.AdminUser">
-		update admin_user set password = #{password} where id = #{id}
+		update mmall_user set password = #{password} where id = #{id}
 	</update>
     <!-- 删除用户 -->
     <delete id="delete" parameterType="String">
-		delete from admin_user where id in(${value})
+		delete from mmall_user where id in(${value})
 	</delete>
     <!-- 分页获取用户列表 -->
     <select id="findList" parameterType="Map" resultType="com.hualy.shopping.pojo.AdminUser">
-        select * from admin_user where 1 = 1
+        select * from mmall_user where 1 = 1
         <if test="username != null">
             and username like '%${username}%'
         </if>

@@ -7,7 +7,15 @@ public class AdminUser {
     private String photo;//头像照片地址
     private Integer age;//年龄
     private String address;//家庭住址
+    private int role;
 
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
+    }
     public Long getId() {
         return id;
     }

@@ -131,12 +131,23 @@
                 }]
             }
         },
+
         mounted: function () {
+            this.findAllUsers();
         },
         methods: {
             menuSelect: function (index) {
                 window.location = "./" + index + '.html'
             },
+            findAllUsers: function () {
+
+                var that = this;
+                axios.get('/api/admin/Users/list').then(function (res) {
+                    console.log(res.data)
+                    that.userList = res.data.data
+                })
+
+            }
         }
     })
 

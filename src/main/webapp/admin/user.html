@@ -48,6 +48,7 @@
                         <span>用户管理</span>
                     </template>
                 </el-menu-item>
+
             </template>
             <el-menu-item index="category">
                 <template slot="title">
@@ -126,7 +127,9 @@
         data: function () {
 
             return {
+
                  isAdmin:true,
+
                 userList: [{
                     id: '1',
                     username: '管理员',
@@ -139,6 +142,7 @@
         // created:function(){
         //     this.isAdminUser();
         // },
+
         mounted: function () {
             this.findAllUsers();
         },

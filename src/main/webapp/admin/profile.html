@@ -57,12 +57,14 @@
                 </template>
             </el-menu-item>
             <template v-if="isAdmin">
+
                 <el-menu-item index="user">
                     <template slot="title">
                         <i class="el-icon-location"></i>
                         <span>用户管理</span>
                     </template>
                 </el-menu-item>
+
             </template>
             <el-menu-item index="category">
                 <template slot="title">
@@ -159,6 +161,7 @@
 
             return {
                 isAdmin:true,
+
                 imagePreview:false,
                 form: {
                     username: '',

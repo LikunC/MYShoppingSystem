@@ -42,12 +42,21 @@
                 </template>
             </el-menu-item>
             <template v-if="isAdmin">
+<<<<<<< HEAD
                 <el-menu-item index="user">
                     <template slot="title">
                         <i class="el-icon-location"></i>
                         <span>用户管理</span>
                     </template>
                 </el-menu-item>
+=======
+            <el-menu-item index="user">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>用户管理</span>
+                </template>
+            </el-menu-item>
+>>>>>>> 7649012026fa7beb3f4308a8b0885325ce89dc3f
             </template>
             <el-menu-item index="category">
                 <template slot="title">
@@ -94,6 +103,7 @@
             return {
                 isAdmin:true
             }
+
 
         },
         // created:function(){

@@ -95,7 +95,7 @@
                     }
                 }).then(function (res) {
                     if (res.data.code === 0) {
-                        location.href = "/admin/home.html"
+                        window.location = "/admin/category.html"
                     } else {
                         that.$notify({
                             title: '登录失败',

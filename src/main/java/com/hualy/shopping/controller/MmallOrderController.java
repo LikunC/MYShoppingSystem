@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,31 +28,55 @@ public class MmallOrderController {
     @RequestMapping(value = "/api/mmallorder/findall",method = RequestMethod.GET)
     @ResponseBody
     private Map<String, Object> getMmallOrder() {
-        Map<String, Object> list =dao.findAll();
-        return JSONResult(0, "success", list);
+        Map<String, Object> map = new HashMap<>();
+        List<Map<String, Object>> list = dao.findAll();
+        if(list!=null&&list.size()>0){
+            return JSONResult(0, "success", list);
+        }else{
+            return JSONResult(1, "fail", null);
+        }
+
     }
 
 
-    @RequestMapping(value = "/api/mmallorder/update", method = RequestMethod.GET)
+    //发货
+    @RequestMapping(value = "/api/mmallorder/updataToShipped", method = RequestMethod.POST)
     @ResponseBody
-    private Map<String, Object> update(HttpServletRequest req, HttpServletResponse res) {
+    private Map<String, Object> updataToShipped(HttpServletRequest req, HttpServletResponse res) {
         MmallOrder mmallOrder=new MmallOrder();
         int id=Integer.parseInt(req.getParameter("id"));
-        int userId=Integer.parseInt(req.getParameter("user_id"));
-        int orderId=Integer.parseInt(req.getParameter("order_id"));
-        int shippingId=Integer.parseInt(req.getParameter("shipping_id"));
-        int paymentType=Integer.parseInt(req.getParameter("payment_type"));
-        int postage=Integer.parseInt(req.getParameter("postage"));
-        int status=Integer.parseInt(req.getParameter("status"));
-        String paymentTime=req.getParameter("payment_time");
-        String sendTime=req.getParameter("send_time");
-        String endTime=req.getParameter("end_time");
-        String closeTime=req.getParameter("close_time");
-        String createTime=req.getParameter("create_time");
-        return JSONResult(0, "用户已登录过", null);
+        Date date = new Date();
+        DateFormat df = DateFormat.getDateTimeInstance();
+        //修改发货时间
+        mmallOrder.setSend_time(df.format(date));
+        mmallOrder.setId(id);
+        int row=dao.updataToShipped(mmallOrder);
+        if(row>0){
+            return JSONResult(0, "发货成功", null);
+        }else{
+            return JSONResult(1, "发货失败", null);
+        }
+
     }
+    //完成订单
+    @RequestMapping(value = "/api/mmallorder/updateToComplete", method = RequestMethod.POST)
+    @ResponseBody
+    private Map<String, Object> updateToComplete(HttpServletRequest req, HttpServletResponse res) {
+        MmallOrder mmallOrder=new MmallOrder();
+        int id=Integer.parseInt(req.getParameter("id"));
+        Date date = new Date();
+        DateFormat df = DateFormat.getDateTimeInstance();
+        //修改订单完成时间
+        mmallOrder.setEnd_time(df.format(date));
+        mmallOrder.setId(id);
+        int row=dao.updateToComplete(mmallOrder);
+        if(row>0){
+            return JSONResult(0, "订单完成", null);
+        }else{
+            return JSONResult(1, "订单完成失败", null);
+        }
 
-
+    }
     private Map<String, Object> JSONResult(int code, String message, Object data) {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("code", code);

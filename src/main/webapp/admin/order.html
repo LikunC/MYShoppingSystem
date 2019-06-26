@@ -27,6 +27,7 @@
             bottom: 0;
             top: 0;
             padding: 16px;
+            overflow: auto;
         }
     </style>
 </head>
@@ -134,18 +135,46 @@
                             @click="showOrderDetail(scope.$index, scope.row)">订单详情
                     </el-button>
                     <el-button
+                            v-if="scope.row.status===2"
                             size="mini"
                             type="danger"
-                            @click="deliver(scope.$index, scope.row)">发货
+                            @click="deliverGoodsDialog(scope.$index, scope.row)">发货
                     </el-button>
                     <el-button
+                            v-if="scope.row.status===3"
                             size="mini"
                             type="danger"
-                            @click="completeOrder(scope.$index, scope.row)">完成订单
+                            @click="completeOrderDialog(scope.$index, scope.row)">完成订单
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
+
+        <el-dialog
+                :append-to-body="true"
+                title="订单详情"
+                :visible.sync="editOrderDialogVisible"
+                width="80%">
+                <span>
+                    <h4>订单ID：{{orderForShow.id}}</h4>
+                    <h4>订单用户：{{orderForShow.user}}</h4>
+                    <h4>订单地址：{{orderForShow.shipping}}</h4>
+                     <h4>支付金额：{{orderForShow.payment}}</h4>
+                     <h4>支付类型：{{orderForShow.payment_type}}</h4>
+                     <h4>运费：{{orderForShow.postage}}</h4>
+                     <h4>订单状态：{{orderForShow.status}}</h4>
+
+                    <h4>创建时间：{{changeDate(orderForShow.payment_time)}}</h4>
+                    <h4>发货时间：{{changeDate(orderForShow.send_time)}}</h4>
+                    <h4>交易完成时间：{{changeDate(orderForShow.end_time)}}</h4>
+                    <h4>交易关闭时间：{{changeDate(orderForShow.close_time)}}</h4>
+                    <h4>创建时间：{{changeDate(orderForShow.create_time)}}</h4>
+               </span>
+            <span slot="footer" class="dialog-footer">
+                    <el-button @click="editOrderDialogVisible = false">关 闭</el-button>
+                </span>
+        </el-dialog>
+
     </div>
 </div>
 </body>
@@ -157,10 +186,33 @@
 
 <script>
 
+    function queryParams(data, isPrefix) {
+        isPrefix = isPrefix ? isPrefix : false
+        var prefix = isPrefix ? '?' : ''
+        var _result = []
+        for (var key in data) {
+            var value = data[key]
+            // 去掉为空的参数
+            if (['', undefined, null].includes(value)) {
+                continue
+            }
+            if (value.constructor === Array) {
+                value.forEach(function (_value) {
+                    _result.push(encodeURIComponent(key) + '[]=' + encodeURIComponent(_value))
+                })
+            } else {
+                _result.push(encodeURIComponent(key) + '=' + encodeURIComponent(value))
+            }
+        }
+
+        return _result.length ? prefix + _result.join('&') : ''
+    }
+
     new Vue({
         el: '#app',
         data: function () {
             return {
+                editOrderDialogVisible: false,
                 orderList: [{
                     id: 1,
                     user: '用户',
@@ -175,23 +227,148 @@
                     end_time: '2019-06-20 10:50',
                     close_time: '2019-06-20 10:55',
                     create_time: '2019-06-20 10:19',
-                }]
+                }],
+                orderForShow: {
+                    id: 1,
+                    user: '用户',
+                    order_no: '1234567',
+                    shipping: '广东省广州市某某去某某地某某楼某某',
+                    payment: 100,
+                    payment_type: '在线支付',
+                    postage: 10,
+                    status: 1,
+                    payment_time: '2019-06-20 10:20',
+                    send_time: '2019-06-20 10:40',
+                    end_time: '2019-06-20 10:50',
+                    close_time: '2019-06-20 10:55',
+                    create_time: '2019-06-20 10:19',
+                }
             }
         },
         mounted: function () {
+            this.getOrderList()
         },
         methods: {
+            changeDate: function (d) {
+                var date = new Date(d);
+
+                Y = date.getFullYear() + '-';
+                M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+                D = date.getDate() + ' ';
+                h = date.getHours() + ':';
+                m = date.getMinutes() + ':';
+                s = date.getSeconds();
+
+                return Y + M + D + h + m + s;
+
+            },
             menuSelect: function (index) {
                 window.location = "./" + index + '.html'
             },
-            showOrderDetail: function () {
-                // 查看订单详情
+            getOrderList: function () {
+                // 显示订单列表
+
+                var that = this
+                axios.get('/api/mmallorder/findall').then(function (res) {
+
+                    if (res.data.code === 0) {
+                        that.orderList = res.data.data
+                        // console.log(that.orderList.payment_time)
+                        // that.orderList.payment_time=that.changeDate(this.orderList.payment_time)
+                    } else {
+                        that.orderList = null
+                        that.$notify({
+                            title: '没有商品信息',
+                            message: res.data.message
+                        })
+                    }
+                })
             },
-            deliver: function () {
+            deliver: function (id) {
+
                 // 发货
+                var that = this
+
+                axios.post('/api/mmallorder/updataToShipped', queryParams({
+                    id: id
+                })).then(function (res) {
+
+                    if (res.data.code === 0) {
+                        that.getOrderList()
+                        // console.log(that.orderList.payment_time)
+                        // that.orderList.payment_time=that.changeDate(this.orderList.payment_time)
+                    } else {
+                        that.orderList = null
+                        that.$notify({
+                            title: '发货失败',
+                            message: res.data.message
+                        })
+                    }
+                })
             },
-            completeOrder: function () {
+            //显示订单详情
+            showOrderDetail: function (index) {
+                this.orderForShow = this.orderList[index]
+                this.editOrderDialogVisible = true
+            },
+            completeOrder: function (id) {
+
                 // 完成订单
+                var that = this
+                axios.post('/api/mmallorder/updateToComplete', queryParams({
+                    id: id
+                })).then(function (res) {
+                    if (res.data.code === 0) {
+                        that.getOrderList()
+                        // console.log(that.orderList.payment_time)
+                        // that.orderList.payment_time=that.changeDate(this.orderList.payment_time)
+                    } else {
+                        that.orderList = null
+                        that.$notify({
+                            title: '订单完成失败',
+                            message: res.data.message
+                        })
+                    }
+                })
+            },
+            //发货
+            deliverGoodsDialog: function (index) {
+                var that = this
+                this.$confirm('此操作将对该商品进行发货, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                    that.deliver(that.orderList[index].id).then(function (res) {
+                        that.$message({
+                            type: 'success',
+                            message: '发货成功!'
+                        });
+                    })
+
+                }).catch(function () {
+                    // do nothings
+                });
+            },
+            //完成订单
+            //发货
+            completeOrderDialog: function (index) {
+                var that = this
+                this.$confirm('此操作将完成该订单, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                    that.completeOrder(that.orderList[index].id).then(function (res) {
+                        that.$message({
+                            type: 'success',
+                            message: '订单完成成功!'
+                        });
+                    })
+
+                }).catch(function () {
+                    // do nothings
+                });
             }
         }
     })

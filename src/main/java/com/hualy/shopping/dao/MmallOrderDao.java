@@ -7,23 +7,12 @@ import java.util.Map;
 
 public interface MmallOrderDao {
     //    查找所有的订单
-    public Map<String, Object> findAll();
+    public List<Map<String, Object>> findAll();
 
-    //    查找未支付订单
-    public Map<String, Object> findUnpaidOrders(MmallOrder mmallOrder);
+    //将订单修改为已发货状态
+    public int updataToShipped(MmallOrder mmallOrder);
 
-    //    查找未发货订单
-    public Map<String, Object> findUnfilledOrders(MmallOrder mmallOrder);
+    //将订单修改为交易成功状态
+    public int updateToComplete(MmallOrder mmallOrder);
 
-    //    查找已发货订单
-    public Map<String, Object> findDeliveredOrders(MmallOrder mmallOrder);
-
-    //    查找已到货订单
-    public Map<String, Object> findReceivedOrders(MmallOrder mmallOrder);
-
-    //    添加订单
-    public int add(MmallOrder mmallOrder);
-
-    //    删除订单
-    public int delete(MmallOrder mmallOrder);
 }

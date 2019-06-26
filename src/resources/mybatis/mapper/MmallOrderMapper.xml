@@ -5,22 +5,29 @@
 <mapper namespace="com.hualy.shopping.dao.MmallOrderDao">
     <!--    订单管理查询所有订单-->
     <select id="findAll" resultType="Map">
-       SELECT mmall_order.order_no,
-            mmall_shipping.receiver_name,
-            CONCAT(mmall_shipping.receiver_city,mmall_shipping.receiver_district,mmall_shipping.receiver_address) receiver_add,
-            mmall_user.phone,
-            mmall_order_item.product_name,
-            mmall_order_item.quantity,
-            mmall_order_item.total_price,
-            mmall_order.status,
-            mmall_order.update_time
-        FROM mmall_order,mmall_shipping,mmall_order_item,mmall_user
-        WHERE mmall_order.shipping_id=mmall_shipping.id AND mmall_order.user_id=mmall_user.id AND mmall_order.order_no=mmall_order_item.id
+     select mmall_order.id,
+            mmall_shipping.receiver_name user,
+            mmall_order.order_no,
+            CONCAT(mmall_shipping.receiver_city,mmall_shipping.receiver_district,mmall_shipping.receiver_address) shipping,
+            mmall_order.payment_type,
+             mmall_order.postage,
+             mmall_order.status,
+            mmall_order.payment,
+            mmall_order.payment_time,
+            mmall_order.create_time,
+             mmall_order.send_time,
+              mmall_order.end_time,
+               mmall_order.close_time
+        FROM mmall_order,mmall_shipping
+        WHERE mmall_order.shipping_id=mmall_shipping.id
     </select>
 
-    <!--   添加订单-->
-    <insert id="add" parameterType="com.hualy.shopping.pojo.MmallOrder">
-		insert into mmall_order (id,user_id,order_no,shipping_id,payment,payment_type,postage,status,payment_time,send_time,end_time,close_time,create_time,update_time) values(null,#{userId},#{orderNo},#{shippingId},#{payment},#{paymentType},#{postage},#{status}，#{paymentTime},#{sengTime},#{endTime},#{closeTime},#{createTime},#{update})
-	</insert>
-
+    <!--    将订单修改为已发货状态-->
+    <update id="updataToShipped" parameterType="com.hualy.shopping.pojo.MmallOrder">
+        update  mmall_order set status=3,end_time=#{end_time} where id=#{id}
+    </update>
+    <!--    将订单修改为交易成功状态-->
+    <update id="updateToComplete" parameterType="com.hualy.shopping.pojo.MmallOrder">
+        update mmall_order set status=4,close_time=#{close_time}where id=#{id}
+    </update>
 </mapper>

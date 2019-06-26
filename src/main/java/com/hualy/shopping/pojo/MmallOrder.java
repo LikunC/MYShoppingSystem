@@ -3,34 +3,26 @@ package com.hualy.shopping.pojo;
 //订单表
 public class MmallOrder {
     private int id;
-    private int userId;
-    private int orderNo;
-    private int shippingId;
+    private int user_id;
+    private int order_no;
+    private int shipping_id;
     private float payment;
     //    支付类型
-    private int paymentType;
+    private int payment_type;
     //    运费，单位元
     private int postage;
-    //    订单状态：0-已取消 10-未取消 20已付款 40-已发货 50-交易成功 60-交易关闭
+    //    订单状态：0-已取消 1-未付款 2-已付款 3-已发货 4-交易成功 5-交易关闭
     private int status;
-    private String paymentTime;
+    private String payment_time;
     //    发货时间
-    private String sendTime;
+    private String send_time;
     //    发货时间
-    private String endTime;
+    private String end_time;
     //    交易完成时间
-    private String closeTime;
-    private String createTime;
+    private String close_time;
+    private String create_time;
     //    更新时间
-    private String updateTime;
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
+    private String update_time;
 
     public int getId() {
         return id;
@@ -40,28 +32,28 @@ public class MmallOrder {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getUser_id() {
+        return user_id;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
-    public int getOrderNo() {
-        return orderNo;
+    public int getOrder_no() {
+        return order_no;
     }
 
-    public void setOrderNo(int orderNo) {
-        this.orderNo = orderNo;
+    public void setOrder_no(int order_no) {
+        this.order_no = order_no;
     }
 
-    public int getShippingId() {
-        return shippingId;
+    public int getShipping_id() {
+        return shipping_id;
     }
 
-    public void setShippingId(int shippingId) {
-        this.shippingId = shippingId;
+    public void setShipping_id(int shipping_id) {
+        this.shipping_id = shipping_id;
     }
 
     public float getPayment() {
@@ -72,12 +64,12 @@ public class MmallOrder {
         this.payment = payment;
     }
 
-    public int getPaymentType() {
-        return paymentType;
+    public int getPayment_type() {
+        return payment_type;
     }
 
-    public void setPaymentType(int paymentType) {
-        this.paymentType = paymentType;
+    public void setPayment_type(int payment_type) {
+        this.payment_type = payment_type;
     }
 
     public int getPostage() {
@@ -96,43 +88,51 @@ public class MmallOrder {
         this.status = status;
     }
 
-    public String getPaymentTime() {
-        return paymentTime;
+    public String getPayment_time() {
+        return payment_time;
     }
 
-    public void setPaymentTime(String paymentTime) {
-        this.paymentTime = paymentTime;
+    public void setPayment_time(String payment_time) {
+        this.payment_time = payment_time;
     }
 
-    public String getSendTime() {
-        return sendTime;
+    public String getSend_time() {
+        return send_time;
     }
 
-    public void setSendTime(String sendTime) {
-        this.sendTime = sendTime;
+    public void setSend_time(String send_time) {
+        this.send_time = send_time;
     }
 
-    public String getCloseTime() {
-        return closeTime;
+    public String getEnd_time() {
+        return end_time;
     }
 
-    public void setCloseTime(String closeTime) {
-        this.closeTime = closeTime;
+    public void setEnd_time(String end_time) {
+        this.end_time = end_time;
     }
 
-    public String getCreateTime() {
-        return createTime;
+    public String getClose_time() {
+        return close_time;
     }
 
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
+    public void setClose_time(String close_time) {
+        this.close_time = close_time;
     }
 
-    public String getUpdateTime() {
-        return updateTime;
+    public String getCreate_time() {
+        return create_time;
     }
 
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
+    }
+
+    public String getUpdate_time() {
+        return update_time;
+    }
+
+    public void setUpdate_time(String update_time) {
+        this.update_time = update_time;
     }
 }

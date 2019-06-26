@@ -13,17 +13,17 @@
     <update id="update" parameterType="com.hualy.shopping.pojo.MmallProduct">
         update mmall_product
         set
-            category_id=#{categoryId},
+            category_id=#{category_id},
             name=#{name},
             subtitle=#{subtitle},
-            main_image=#{mainImage},
-            sub_image=#{subImage},
+            main_image=#{main_image},
+            sub_image=#{sub_image},
             detail=#{detail},
             price=#{price},
             stock=#{stock},
             status=#{status},
-            create_time=#{createTime},
-            update_time=#{updateTime}
+            create_time=#{create_time},
+            update_time=#{update_time}
         where id=#{id}
     </update>
 
@@ -33,6 +33,6 @@
 
     <insert id="add" parameterType="com.hualy.shopping.pojo.MmallProduct">
         insert into mmall_product (id,category_id,name,subtitle,main_image,sub_image,detail,price,stock,status,create_time,update_time)
-        value (null,#{categoryId},#{name},#{subtitle},#{mainImage},#{subImage},#{detail},#{price},#{stock},#{status},#{createTime},#{updateTime})
+        value (null,#{category_id},#{name},#{subtitle},#{main_image},#{sub_image},#{detail},#{price},#{stock},#{status},#{create_time},#{update_time})
     </insert>
 </mapper>

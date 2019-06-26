@@ -9,10 +9,6 @@
         <!--指定文件位置 *通配符 -->
         <param-value>classpath:spring/applicationContext*.xml</param-value>
     </context-param>
-    <context-param>
-        <param-name/>
-        <param-value/>
-    </context-param>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
@@ -32,16 +28,6 @@
         <!-- 拦截所有请求 -->
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-    <filter>
-        <!--该过滤器用于处理post请求转换为标准的delete与put请求 -->
-        <filter-name>HiddenHttpMethodFilter</filter-name>
-        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>HiddenHttpMethodFilter</filter-name>
-        <!--servlet为springMvc的servlet名 -->
-        <servlet-name>springmvc</servlet-name>
-    </filter-mapping>
     <!-- 乱码处理filter过滤器 -->
     <filter>
         <filter-name>encodingFilter</filter-name>
@@ -57,12 +43,46 @@
         <!-- 指定拦截方式 -->
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-<!--    <filter>-->
-<!--        <filter-name>LoginFilter</filter-name>-->
-<!--        <filter-class>com.hualy.shopping.filter.LoginFilter</filter-class>-->
-<!--    </filter>-->
-<!--    <filter-mapping>-->
-<!--        <filter-name>LoginFilter</filter-name>-->
-<!--        <url-pattern>/admin/*.jsp</url-pattern>-->
-<!--    </filter-mapping>-->
+    <filter>
+        <filter-name>HttpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HttpPutFormContentFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>HttpMethodFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>HiddenHttpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>HiddenHttpMethodFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- 解决put,patch等请求，data数据拿不到的问题 -->
+    <filter>
+        <filter-name>HttpPutFormContentFilter </filter-name>
+        <filter-class>org.springframework.web.filter.HttpPutFormContentFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>HttpPutFormContentFilter </filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!--    <filter>-->
+    <!--        <filter-name>HttpDeleteMethodFilter</filter-name>-->
+    <!--        <filter-class>org.springframework.web.filter.HttpDelete</filter-class>-->
+    <!--    </filter>-->
+    <!--    <filter-mapping>-->
+    <!--        <filter-name>HttpMethodFilter</filter-name>-->
+    <!--        <url-pattern>/*</url-pattern>-->
+    <!--    </filter-mapping>-->
+    <!--    <filter>-->
+    <!--        <filter-name>LoginFilter</filter-name>-->
+    <!--        <filter-class>com.hualy.shopping.filter.LoginFilter</filter-class>-->
+    <!--    </filter>-->
+    <!--    <filter-mapping>-->
+    <!--        <filter-name>LoginFilter</filter-name>-->
+    <!--        <url-pattern>/admin/*.jsp</url-pattern>-->
+    <!--    </filter-mapping>-->
 </web-app>

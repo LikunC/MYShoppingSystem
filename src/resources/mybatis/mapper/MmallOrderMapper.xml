@@ -8,7 +8,7 @@
      select mmall_order.id,
             mmall_shipping.receiver_name user,
             mmall_order.order_no,
-            CONCAT(mmall_shipping.receiver_city,mmall_shipping.receiver_district,mmall_shipping.receiver_address) shipping,
+            CONCAT(mmall_shipping.receiver_province,mmall_shipping.receiver_city,mmall_shipping.receiver_district,mmall_shipping.receiver_address) shipping,
             mmall_order.payment_type,
              mmall_order.postage,
              mmall_order.status,
@@ -24,10 +24,10 @@
 
     <!--    将订单修改为已发货状态-->
     <update id="updataToShipped" parameterType="com.hualy.shopping.pojo.MmallOrder">
-        update  mmall_order set status=3,end_time=#{end_time} where id=#{id}
+        update  mmall_order set status=3,send_time=#{send_time} where id=#{id}
     </update>
     <!--    将订单修改为交易成功状态-->
     <update id="updateToComplete" parameterType="com.hualy.shopping.pojo.MmallOrder">
-        update mmall_order set status=4,close_time=#{close_time}where id=#{id}
+        update mmall_order set status=4,end_time=#{end_time}where id=#{id}
     </update>
 </mapper>

@@ -45,7 +45,7 @@ public class MmallProductController {
         String detail = req.getParameter("detail");
         float price = Float.parseFloat(req.getParameter("price"));
         int stock = Integer.parseInt(req.getParameter("stock"));
-        int status = Integer.parseInt(req.getParameter("status"));
+        String status = req.getParameter("status");
 
         MmallProduct mmallProduct = new MmallProduct();
 
@@ -83,7 +83,7 @@ public class MmallProductController {
         String detail = req.getParameter("detail");
         float price = Float.parseFloat(req.getParameter("price"));
         int stock = Integer.parseInt(req.getParameter("stock"));
-        int status = Integer.parseInt(req.getParameter("status"));
+        String status = req.getParameter("status");
 
         MmallProduct mmallProduct = new MmallProduct();
         mmallProduct.setId(id);
@@ -92,9 +92,16 @@ public class MmallProductController {
             mp.setCategory_id(categoryId);
             mp.setName(name);
             mp.setSubtitle(subtitle);
-            if (main_image != null && subImage != null) {
+            if (main_image != null) {
                 mp.setMain_image(main_image);
-                mp.setSub_image(subImage);
+            }
+            if ( subImage != null) {
+                if(mp.getSub_image()==null||mp.getSub_image().equals("")){
+                    mp.setSub_image(subImage);
+                }else{
+                    mp.setSub_image(mp.getSub_image()+","+subImage);
+                }
+
             }
             mp.setDetail(detail);
             mp.setPrice(price);

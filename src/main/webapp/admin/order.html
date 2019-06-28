@@ -217,7 +217,7 @@
         data: function () {
             return {
                 editOrderDialogVisible: false,
-                isAdmin:false,
+                isAdmin:true,
                 orderList: [{
                     id: 1,
                     user: '用户',
@@ -250,9 +250,9 @@
                 }
             }
         },
-        created:function(){
-            this.isAdminUser();
-        },
+        // created:function(){
+        //     this.isAdminUser();
+        // },
         mounted: function () {
             this.getOrderList()
         },

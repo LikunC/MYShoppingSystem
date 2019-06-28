@@ -60,12 +60,12 @@
                 </template>
             </el-menu-item>
             <template v-if="isAdmin">
-            <el-menu-item index="user">
-                <template slot="title">
-                    <i class="el-icon-location"></i>
-                    <span>用户管理</span>
-                </template>
-            </el-menu-item>
+                <el-menu-item index="user">
+                    <template slot="title">
+                        <i class="el-icon-location"></i>
+                        <span>用户管理</span>
+                    </template>
+                </el-menu-item>
             </template>
             <el-menu-item index="category">
                 <template slot="title">
@@ -105,7 +105,7 @@
                         prop="id"
                         label="ID"
                         width="180"
-                        >
+                >
                 </el-table-column>
 
                 <el-table-column
@@ -126,18 +126,18 @@
                         <el-image :src="'/upload/'+scope.row.main_image" fit="cover" style="width: 100px; height: 100px"></el-image>
                     </template>
                 </el-table-column>
-<!--                <el-table-column-->
-<!--                        width="400"-->
-<!--                        prop="sub_image"-->
-<!--                        label="轮播图">-->
-<!--                    <template slot-scope="scope">-->
-<!--                        <el-image-->
-<!--                                v-for="image in (scope.row.sub_image || '').split(',')"-->
-<!--                                style="width: 100px; height: 100px"-->
-<!--                                :src="image"-->
-<!--                                fit="cover"></el-image>-->
-<!--                    </template>-->
-<!--                </el-table-column>-->
+                <el-table-column
+                        width="400"
+                        prop="sub_image"
+                        label="轮播图">
+                    <template slot-scope="scope">
+                        <el-image
+                                v-for="image in (scope.row.sub_image || '').split(',')"
+                                style="width: 100px; height: 100px"
+                                :src="'/upload/'+image"
+                                fit="cover"></el-image>
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" width="200" fixed="right">
                     <template slot-scope="scope">
                         <el-button
@@ -159,7 +159,7 @@
                     :visible.sync="addProductDialogVisible"
                     width="80%">
                 <span>
-                    <el-form  name="form1">
+                    <el-form  name="form1" :model="productForm" :rules="rules" ref="productForm">
                         <el-form-item label="商品分类">
                             <el-select v-model="productForm.category_id" placeholder="商品分类">
                                 <el-option
@@ -167,16 +167,16 @@
                                         :key="item.id"
                                         :label="item.name"
                                         :value="item.id"
-                                        >
+                                >
                                 </el-option>
                             </el-select>
                          </el-form-item>
-                        <el-form-item label="商品名称">
+                        <el-form-item label="商品名称" prop="name">
                             <el-input v-model="productForm.name" min="1" onfocus="onfocus_userName()"
                                       onblur="" name="pid"></el-input>
 
                         </el-form-item>
-                        <el-form-item label="商品副标题">
+                        <el-form-item label="商品副标题" prop="subtitle">
                             <el-input v-model="productForm.subtitle" min="1"></el-input>
                         </el-form-item>
                          <el-form-item label="商品主图">
@@ -189,14 +189,25 @@
                               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </el-form-item>
-                         <el-form-item label="商品描述">
+
+                        <el-form-item label="商品轮播图">
+                            <el-upload
+                                    class="avatar-uploader"
+                                    action="http://localhost:8080/file/upload"
+                                    :show-file-list="false"
+                                    :on-success="handleSubImageUploadSuccess">
+                              <img v-if="subImagePreview" :src="subImagePreview" class="avatar">
+                              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </el-form-item>
+                         <el-form-item label="商品描述" prop="detail">
                             <el-input v-model="productForm.detail" min="1"></el-input>
                         </el-form-item>
-                        <el-form-item label="商品价格">
-                            <el-input v-model="productForm.price" min="1"></el-input>
+                        <el-form-item label="商品价格" prop="price">
+                            <el-input v-model.number="productForm.price" min="1"></el-input>
                         </el-form-item>
-                        <el-form-item label="商品库存">
-                            <el-input v-model="productForm.stock" min="1"></el-input>
+                        <el-form-item label="商品库存" prop="stock">
+                            <el-input v-model.number="productForm.stock" min="1"></el-input>
                         </el-form-item>
                         <el-form-item label="商品状态">
                             <el-input v-model="productForm.status" min="1"></el-input>
@@ -215,8 +226,8 @@
                     :visible.sync="editProductDialogVisible"
                     width="80%">
                 <span>
-                    <el-form>
-                        <el-form-item label="商品分类">
+                    <el-form :model="productForEdit" :rules="rules" ref="productForEdit">
+                        <el-form-item label="商品分类" >
                             <el-select v-model="productForEdit.category_id" placeholder="商品分类">
                                 <el-option
                                         v-for="item in categoryList"
@@ -226,10 +237,10 @@
                                 </el-option>
                             </el-select>
                          </el-form-item>
-                        <el-form-item label="商品名称">
+                        <el-form-item label="商品名称" prop="name">
                             <el-input v-model="productForEdit.name"></el-input>
                         </el-form-item>
-                        <el-form-item label="商品副标题">
+                        <el-form-item label="商品副标题" prop="subtitle">
                             <el-input v-model="productForEdit.subtitle"></el-input>
                         </el-form-item>
                          <el-form-item label="商品主图">
@@ -242,14 +253,26 @@
                               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </el-form-item>
-                         <el-form-item label="商品描述">
+
+
+                        <el-form-item label="商品轮播图">
+                            <el-upload
+                                    class="avatar-uploader"
+                                    action="http://localhost:8080/file/upload"
+                                    :show-file-list="false"
+                                    :on-success="handleSubImageUploadSuccessForEdit">
+                              <img v-if="subImageForEdit" :src="subImageForEdit" class="avatar">
+                              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </el-form-item>
+                         <el-form-item label="商品描述" prop="detail">
                             <el-input v-model="productForEdit.detail"></el-input>
                         </el-form-item>
-                        <el-form-item label="商品价格">
-                            <el-input v-model="productForEdit.price"></el-input>
+                        <el-form-item label="商品价格" prop="price">
+                            <el-input v-model.number="productForEdit.price"></el-input>
                         </el-form-item>
-                        <el-form-item label="商品库存">
-                            <el-input v-model="productForEdit.stock" min="1"></el-input>
+                        <el-form-item label="商品库存" prop="stock">
+                            <el-input v-model.number="productForEdit.stock" min="1"></el-input>
                         </el-form-item>
                         <el-form-item label="商品状态">
                             <el-input v-model="productForEdit.status"></el-input>
@@ -300,9 +323,11 @@
         data: function () {
 
             return {
-                isAdmin:false,
+                isAdmin:true,
                 imagePreview: '',
+                subImagePreview:'',
                 imagePreviewForEdit: '',
+                subImageForEdit:'',
                 addProductDialogVisible: false,
                 editProductDialogVisible: false,
                 productList: [{
@@ -318,7 +343,7 @@
                     status: "在售",
                 }],
                 productForm: {
-                    category_id: 1,
+                    category_id:'',
                     name: '',
                     subtitle: '',
                     main_image: '',
@@ -329,7 +354,7 @@
                     status: '在售',
                 },
                 productForEdit: {
-                    category_id: 1,
+                    category_id:'',
                     name: '',
                     subtitle: '',
                     main_image: '',
@@ -339,7 +364,28 @@
                     stock: '',
                     status: '',
                 },
-                categoryList: []
+                categoryList: [],
+                rules:{
+                    name: [
+                        { required: true, message: '请输入商品名称', trigger: 'blur' },
+                        { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+                    ],
+                    subtitle:[
+                        { required: true, message: '请输入商品副标题', trigger: 'blur' },
+                        { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+                    ],
+                    detail: [
+                        { required: true, message: '请输入商品描述', trigger: 'blur' }
+                    ],
+                    price: [
+                        { required: true, message: '请输入商品价格', trigger: 'blur' },
+                        { type: 'number', message: '商品价格必须为数字值'}
+                    ],
+                    stock: [
+                        { required: true, message: '请输入商品库存', trigger: 'blur' },
+                        { type: 'number', message: '商品库存必须为数字值'}
+                    ]
+                },
             }
         },
         created:function(){
@@ -361,9 +407,7 @@
 
                     if (res.data.code === 0) {
                         that.productList = res.data.data
-                        console.log(that.productList)
-                        for(imgUrl in that.productList){
-                            console.log(imgUrl.main_image)                        }
+                        that.getCategoryList()
                     } else {
                         that.productList = null
                         that.$notify({
@@ -381,6 +425,10 @@
                     axios.post('/api/admin/product', queryParams(productForm)).then(function (res) {
                         if (res.data.code === 0) {
                             that.getProductList()
+                            that.imagePreview=''
+                            that.subImagePreview=''
+                            that.productForm=''
+
                             that.addProductDialogVisible= false,
                                 that.$notify({
                                     title: '添加成功',
@@ -398,9 +446,12 @@
             },
             updateProduct: function (productForEdit) {
                 var that = this
+                // that.productForEdit.sub_image=that.subImageForEdit
                 axios.post('/api/admin/product/update', queryParams(productForEdit)).then(function (res) {
                     if (res.data.code === 0) {
                         that.getProductList()
+                        that.subImageForEdit=''
+                        that.imagePreviewForEdit=''
                         that.editProductDialogVisible = false
                     } else {
                         that.$notify({
@@ -433,9 +484,19 @@
                 console.log("++"+res.data)
                 this.productForm.main_image =""+res.data
             },
+            handleSubImageUploadSuccess: function (res, file) {
+
+                this.subImagePreview = URL.createObjectURL(file.raw);
+                console.log("++"+res.data)
+                this.productForm.sub_image =""+res.data
+            },
             handleMainImageUploadSuccessForEdit: function (res, file) {
                 this.imagePreviewForEdit = URL.createObjectURL(file.raw);
                 this.productForEdit.main_image =res.data
+            },
+            handleSubImageUploadSuccessForEdit: function (res, file) {
+                this.subImageForEdit = URL.createObjectURL(file.raw);
+                this.productForEdit.sub_image =res.data
             },
             menuSelect: function (index) {
                 window.location = "./" + index + '.html'

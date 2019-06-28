@@ -19,7 +19,7 @@ public class MmallProduct {
     //    库存数量
     private int stock;
     //    商品状态 1-在售 2-下架 3-删除
-    private int status;
+    private String status;
     private String create_time;
     private String update_time;
 
@@ -95,11 +95,11 @@ public class MmallProduct {
         this.stock = stock;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
